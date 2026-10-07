@@ -1,0 +1,178 @@
+:root {
+  --bg: #e8e6e1;
+  --ink: #1c2630;
+  --mute: #5d6872;
+  --card: #d9d6cf;
+  --accent: #0f6b73;
+  --lb: rgba(14, 20, 26, .94);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161c22;
+    --ink: #e9e7e2;
+    --mute: #97a2ab;
+    --card: #222a31;
+    --accent: #5cc3c9;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 64px) clamp(16px, 4vw, 32px) 16px;
+}
+h1 {
+  font-size: clamp(2rem, 6vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin: 0 0 10px;
+}
+header p { margin: 0; color: var(--mute); max-width: 46ch; }
+
+/* ---------- Filters ---------- */
+.filters {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px clamp(16px, 4vw, 32px) 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filters button {
+  font: inherit;
+  font-weight: 600;
+  font-size: .92rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .25s, color .25s, transform .2s;
+}
+.filters button:hover { transform: translateY(-2px); }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+button:focus-visible, .item:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Grid ---------- */
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: clamp(10px, 2vw, 20px);
+}
+.item {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--card);
+  cursor: zoom-in;
+  aspect-ratio: 4 / 3;
+  transition: opacity .4s, transform .4s;
+}
+.item:nth-child(5n+1) { aspect-ratio: 1 / 1; }
+.item.hide { display: none; }
+.item.fade { opacity: 0; transform: scale(.96); }
+
+.item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .6s cubic-bezier(.2, .7, .2, 1), filter .4s;
+}
+.item:hover img, .item:focus-visible img {
+  transform: scale(1.08);
+  filter: saturate(1.2);
+}
+.item span {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 28px 14px 12px;
+  text-align: left;
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(transparent, rgba(0, 0, 0, .65));
+  transform: translateY(100%);
+  transition: transform .35s;
+}
+.item:hover span, .item:focus-visible span { transform: none; }
+@media (hover: none) { .item span { transform: none; } }
+
+/* ---------- Lightbox ---------- */
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  margin: 0;
+  background: var(--lb);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 56px 64px 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+}
+.lb.open { opacity: 1; visibility: visible; }
+.lb img {
+  max-width: 100%;
+  max-height: calc(100% - 50px);
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+  transition: opacity .25s, transform .35s;
+}
+.lb img.swap { opacity: 0; transform: scale(.97); }
+.lb figcaption { color: #e9e7e2; text-align: center; }
+.lb figcaption small { display: block; color: #97a2ab; }
+
+.lb .nav, .lb .close {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background .25s, transform .25s;
+}
+.lb .nav:hover, .lb .close:hover { background: rgba(255, 255, 255, .28); transform: scale(1.08); }
+.lb .prev { left: 12px; top: 50%; margin-top: -24px; }
+.lb .next { right: 12px; top: 50%; margin-top: -24px; }
+.lb .close { top: 12px; right: 12px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .lb { padding: 64px 12px 90px; }
+  .lb .prev, .lb .next { top: auto; bottom: 20px; margin: 0; }
+  .lb .prev { left: 24%; }
+  .lb .next { right: 24%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
